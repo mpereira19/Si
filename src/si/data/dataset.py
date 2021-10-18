@@ -92,8 +92,9 @@ class Dataset:
 
     def toDataframe(self):
         """ Converts the dataset into a pandas DataFrame"""
-        # return pd.DataFrame(data=, index=, columns= )
-        pass
+        df = pd.DataFrame(data=self.X, columns= self._xnames)
+        df[self._yname] = self.Y
+        return df
 
     def getXy(self):
         return self.X, self.Y
