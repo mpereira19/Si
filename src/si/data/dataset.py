@@ -1,4 +1,6 @@
 import numpy as np
+import pandas as pd
+
 from si.util.util import label_gen
 
 __all__ = ['Dataset']
@@ -47,7 +49,18 @@ class Dataset:
         :return: [description]
         :rtype: [type]
         """
-        pass
+        if ylabel is not None and ylabel in df.columns:
+            X = df.loc[:, df.columns != ylabel].to_numpy()
+            Y = df.loc[:, ylabel].to_numpy()
+            xnames = df.columns.tolist().remove(ylabel)
+            yname = ylabel
+        else:
+            X = df.to_numpy()
+            Y = None
+            xnames = df.columns.tolist()
+            yname = None
+        return cls(X, Y, xnames, yname)
+
 
     def __len__(self):
         """Returns the number of data points."""
@@ -55,15 +68,15 @@ class Dataset:
 
     def hasLabel(self):
         """Returns True if the dataset constains labels (a dependent variable)"""
-        pass
+        return self.Y is not None
 
     def getNumFeatures(self):
         """Returns the number of features"""
-        pass
+        return self.X.shape[1]
 
     def getNumClasses(self):
         """Returns the number of label classes or 0 if the dataset has no dependent variable."""
-        pass
+        return len(np.unique(self.Y)) if self.hasLabel() else 0
 
     def writeDataset(self, filename, sep=","):
         """Saves the dataset to a file
@@ -79,6 +92,7 @@ class Dataset:
 
     def toDataframe(self):
         """ Converts the dataset into a pandas DataFrame"""
+        # return pd.DataFrame(data=, index=, columns= )
         pass
 
     def getXy(self):
