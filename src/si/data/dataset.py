@@ -92,7 +92,7 @@ class Dataset:
 
     def toDataframe(self):
         """ Converts the dataset into a pandas DataFrame"""
-        df = pd.DataFrame(data=self.X, columns= self._xnames)
+        df = pd.DataFrame(data=self.X, columns=self._xnames)
         df[self._yname] = self.Y
         return df
 

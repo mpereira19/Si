@@ -2,6 +2,7 @@ import numpy as np
 from scipy import stats
 from copy import copy
 import warnings
+from si.data import Dataset
 
 class VarianceThreshold:
 
@@ -16,22 +17,18 @@ class VarianceThreshold:
 		self._var = np.var(x, axis=0)
 
 	def transform(self, dataset, inline=False):
-		X = dataset.X
+		X, x_names = copy(dataset.X), copy(dataset._xnames)
 		cond = self._var > self.threshold
-		idxs = [i for i in range(len(cond)) if cond[i]]
-		X_trans = X[:, idxs]
-		xnames = [dataset._names[i] for i in idxs]
+		X_trans = X[:, cond]
+		idxs = [i for i in range(dataset.getNumFeatures()) if cond[i]]
+		xnames = [x_names[i] for i in idxs]
 		if inline:
 			dataset.X = X_trans
 			dataset._xnames = xnames
 			return dataset
 		else:
 			from .dataset import Dataset
-			return Dataset(X_trans, copy(dataset.Y), xnames, copy(dataset.yname))
-
-	def fit_transform(self, dataset, inline=False):
-		self.fit(dataset)
-		return self.transform(dataset, inline=inline)
+			return Dataset(X_trans, copy(dataset.Y), xnames, copy(dataset._yname))
 
 
 class selectKbest:
@@ -61,7 +58,8 @@ def f_classification(dataset):
 	from scipy.stats import f_oneway
 	x, y = dataset.X, dataset.Y
 	arguments = [x[cat == y, :] for cat in np.unique(y)]
-	return f_oneway(arguments)
+	f_s, p = f_oneway(arguments)
+	return f_s, p
 
 
 def f_regression(dataset):
