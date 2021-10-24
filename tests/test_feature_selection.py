@@ -30,32 +30,32 @@ class testVarianceThreshold(unittest.TestCase):
 		self.vt_transform = self.vt_test.transform(self.dataset)
 		self.assertEqual(self.dataset.X.shape, self.vt_transform.X.shape, "Variance Thresold transform and dataset don't have the same size")
 
-#
-# class test_f_classification(unittest.TestCase):
-#
-# 	def setUp(self):
-# 		from si.data import Dataset
-# 		self.filename = "datasets/pima.data"
-# 		self.dataset = Dataset.from_data(self.filename, labeled=True)
-#
-# 	def test_f_classification(self):
-# 		from si.data.feature_selection import f_classification as fcl
-# 		f, p = fcl(self.dataset)
-# 		self.assertEqual(f.shape, (8,), "Wrong f shape size! Right shape (8,) in f_classification")
-# 		self.assertEqual(p.shape, (8,), "Wrong p shape size! Right shape (8,) in f_classification")
-#
 
-# class test_f_regretion(unittest.TestCase):
-#
-# 	def setUp(self):
-# 		from si.data import Dataset
-# 		self.filename = "datasets/pima.data"
-# 		self.dataset = Dataset.from_data(self.filename, labeled=True)
-#
-# 	def test_f_regression(self):
-# 		from si.data.feature_selection import f_regression as fr
-# 		f, p = fr(self.dataset)
-# 		self.assertEqual(f.shape, (8,), "Wrong f shape size! Right shape (8,) in f_regression")
-# 		self.assertEqual(p.shape, (8,), "Wrong p shape size! Right shape (8,) in f_regression")
-#
+class test_f_classification(unittest.TestCase):
+
+	def setUp(self):
+		from si.data import Dataset
+		self.filename = "datasets/pima.data"
+		self.dataset = Dataset.from_data(self.filename, labeled=True)
+
+	def test_f_classification(self):
+		from si.data.feature_selection import f_classification as fcl
+		f, p = fcl(self.dataset)
+		self.assertEqual(f.shape, (8,), "Wrong f shape size! Right shape (8,) in f_classification")
+		self.assertEqual(p.shape, (8,), "Wrong p shape size! Right shape (8,) in f_classification")
+
+
+class test_f_regression(unittest.TestCase):
+
+	def setUp(self):
+		from si.data import Dataset
+		self.filename = "datasets/pima.data"
+		self.dataset = Dataset.from_data(self.filename, labeled=True)
+
+	def test_f_regression(self):
+		from si.data.feature_selection import f_regression as fr
+		f, p = fr(self.dataset)
+		self.assertEqual(f.shape, (8,), "Wrong f shape size! Right shape (8,) in f_regression")
+		self.assertEqual(p.shape, (8,), "Wrong p shape size! Right shape (8,) in f_regression")
+
 
