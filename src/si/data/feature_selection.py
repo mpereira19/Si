@@ -41,22 +41,26 @@ class selectKbest:
 		self.f, self.pvalue = self.scor_func(dataset)
 
 	def transform(self, dataset, inline=False):
-		indexes = self.f.argsort()[self.f.shape[1]-self.k:]
-		indexes = indexes.sort()
-		new_data = self.f[:, indexes]
-		xnames = [dataset._names[i] for i in indexes]
+		x, x_names = copy(dataset.X), copy(dataset._xnames)
+		indexes = self.f.argsort()[len(self.f)-self.k:]
+		new_data = x[:, indexes]
+		xnames = [x_names[i] for i in indexes]
 		if inline:
 			dataset.X = new_data
 			dataset._xnames = xnames
 			return dataset
 		else:
 			from .dataset import Dataset
-			return Dataset(new_data, copy(dataset.Y), xnames, copy(dataset.yname))
+			return Dataset(new_data, copy(dataset.Y), xnames, copy(dataset._yname))
+
+	def fit_transform(self, dataset, inline=False):
+		self.fit(dataset)
+		return self.transform(dataset, inline=inline)
 
 
 def f_classification(dataset):
 	from scipy.stats import f_oneway
-	x, y = dataset.X, dataset.Y
+	x, y = dataset.getXy()
 	arguments = [x[cat == y, :] for cat in np.unique(y)]
 	f_s, p = f_oneway(*arguments)
 	return f_s, p
@@ -67,7 +71,7 @@ def f_regression(dataset):
 	# https://github.com/scikit-learn/scikit-learn/blob/844b4be24/sklearn/feature_selection/_univariate_selection.py#L294
 	from scipy.stats import f
 
-	x, y = dataset.X, dataset.Y
+	x, y = dataset.getXy()
 	corr = np.corrcoef(x, rowvar=False)
 
 	# Apenas queremos a correlação de cada variável com o y daí utilizarmos a última linha da matriz sem o último

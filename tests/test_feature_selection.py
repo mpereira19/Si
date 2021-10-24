@@ -59,3 +59,56 @@ class test_f_regression(unittest.TestCase):
 		self.assertEqual(p.shape, (8,), "Wrong p shape size! Right shape (8,) in f_regression")
 
 
+class test_selectKbest_f_regression(unittest.TestCase):
+
+	def setUp(self):
+		from si.data import Dataset
+		from si.data.feature_selection import f_regression, selectKbest
+		self.filename = "datasets/pima.data"
+		self.dataset = Dataset.from_data(self.filename, labeled=True)
+		self.selectKbest = selectKbest(f_regression, 5)
+		self.assertEqual(self.selectKbest.k, 5, "selectKbest doesn't have correct k")
+
+	def test_fit(self):
+		self.selectKbest.fit(self.dataset)
+		self.assertEqual(len(self.selectKbest.f), 8, "F size doesn't correspond to dataset size")
+		self.assertEqual(len(self.selectKbest.pvalue), 8, "p size doesn't correspond to dataset size")
+
+	def test_transform(self):
+		self.selectKbest.fit(self.dataset)
+		self.selectKbest_transform = self.selectKbest.transform(self.dataset)
+		self.assertEqual(self.dataset.X.shape[0], self.selectKbest_transform.X.shape[0], "Dataset and selectKbest.transform don't have the same shape")
+		self.assertEqual(self.selectKbest_transform.X.shape[1], self.selectKbest.k)
+
+	def test_fit_transform(self):
+		self.selectKbest_fit_transform = self.selectKbest.fit_transform(self.dataset)
+		self.assertEqual(self.selectKbest_fit_transform.X.shape[1], self.selectKbest.k)
+
+
+class test_selectKbest_f_classification(unittest.TestCase):
+
+	def setUp(self):
+		from si.data import Dataset
+		from si.data.feature_selection import f_classification, selectKbest
+		self.filename = "datasets/pima.data"
+		self.dataset = Dataset.from_data(self.filename, labeled=True)
+		self.selectKbest = selectKbest(f_classification, 5)
+		self.assertEqual(self.selectKbest.k, 5, "selectKbest doesn't have correct k")
+
+	def test_fit(self):
+		self.selectKbest.fit(self.dataset)
+		self.assertEqual(len(self.selectKbest.f), 8, "F size doesn't correspond to dataset size")
+		self.assertEqual(len(self.selectKbest.pvalue), 8, "p size doesn't correspond to dataset size")
+
+	def test_transform(self):
+		self.selectKbest.fit(self.dataset)
+		self.selectKbest_transform = self.selectKbest.transform(self.dataset)
+		self.assertEqual(self.dataset.X.shape[0], self.selectKbest_transform.X.shape[0], "Dataset and selectKbest.transform don't have the same shape")
+		self.assertEqual(self.selectKbest_transform.X.shape[1], self.selectKbest.k)
+
+	def test_fit_transform(self):
+		self.selectKbest_fit_transform = self.selectKbest.fit_transform(self.dataset)
+		self.assertEqual(self.selectKbest_fit_transform.X.shape[1], self.selectKbest.k)
+
+if __name__ == '__main__':
+    unittest.main()
