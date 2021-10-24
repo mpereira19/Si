@@ -58,7 +58,7 @@ def f_classification(dataset):
 	from scipy.stats import f_oneway
 	x, y = dataset.X, dataset.Y
 	arguments = [x[cat == y, :] for cat in np.unique(y)]
-	f_s, p = f_oneway(arguments)
+	f_s, p = f_oneway(*arguments)
 	return f_s, p
 
 
@@ -73,8 +73,8 @@ def f_regression(dataset):
 	# Apenas queremos a correlação de cada variável com o y daí utilizarmos a última linha da matriz sem o último
 	# valor da linha.
 
-	corr = corr[-1:, :len(corr)-1]
-	sq_corr = corr**2
+	corr = corr[-1:, :len(corr)].reshape(x.shape[1])
+	sq_corr = corr ** 2
 	degree_freedom = y.size-2
 	f_r = sq_corr/(1-sq_corr)*degree_freedom
 	p = f.sf(f_r, 1, degree_freedom)
