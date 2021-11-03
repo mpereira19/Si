@@ -55,3 +55,8 @@ def summary(dataset, format='df'):
         df = pd.DataFrame(stats)
     else:
         return stats
+
+
+def l2_distance(x, y):
+    dist = ((x -y) ** 2).sum(axis=1)
+    return dist
