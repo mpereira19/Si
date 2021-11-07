@@ -1,6 +1,8 @@
 import numpy as np
 from si.util.util import l2_distance
 
+__all__ = ['Kmeans']
+
 class Kmeans:
 
 	def __init__(self, k: int, iterations=100):
@@ -30,12 +32,15 @@ class Kmeans:
 		count = 0
 		old_idxs = np.zeros(x.shape[0])
 		while changed and count < self.max_iter:
-			idxs = np.apply_along_axis(self.closest_centroid, axis=0, arr=x.T)
-			self.centroids = np.array([np.mean(x[idxs == i]) for i in range(self.k)])
+			self.idxs = np.apply_along_axis(self.closest_centroid, axis=0, arr=x.T)
+			cent = list()
+			for i in range(self.k):
+				cent.append(np.mean(x[self.idxs == i], axis=0))
+			self.centroids = np.array(cent)
 			changed = np.all(old_idxs == self.idxs)
-			old_idxs = idxs
+			old_idxs = self.idxs
 			count += 1
-		return self.centroids, idxs
+		return self.centroids, self.idxs
 
 	def fit_transform(self, dataset):
 		self.fit(dataset)
