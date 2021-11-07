@@ -98,3 +98,38 @@ class Dataset:
 
     def getXy(self):
         return self.X, self.Y
+
+def summary(dataset, format='df'):
+    """ Returns the statistics of a dataset(mean, std, max, min)
+    :param dataset: A Dataset object
+    :type dataset: si.data.Dataset
+    :param format: Output format ('df':DataFrame, 'dict':dictionary ), defaults to 'df'
+    :type format: str, optional
+    """
+    if dataset.hasLabel():
+        fullds = np.hstack((dataset.X, dataset.y.reshape(len(dataset.y), 1)))
+        columns = dataset._xnames[:]+[dataset._yname]
+    else:
+        fullds = dataset.X
+        columns = dataset._xnames[:]
+    stats = {}
+    for i in range(fullds.shape[1]):
+        try:
+            _means = np.mean(fullds[:, i], axis=0)
+            _vars = np.var(fullds[:, i], axis=0)
+            _maxs = np.max(fullds[:, i], axis=0)
+            _mins = np.min(fullds[:, i], axis=0)
+        except Exception:
+            _means = _vars = _maxs = _mins = np.NAN
+        stat = {'mean': _means,
+                'var': _vars,
+                'min': _mins,
+                'max': _maxs
+                }
+        stats[columns[i]] = stat
+    if format == 'df':
+        import pandas as pd
+        df = pd.DataFrame(stats)
+        return df
+    else:
+        return stats
