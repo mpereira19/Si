@@ -66,13 +66,13 @@ class test_selectKbest_f_regression(unittest.TestCase):
 		from si.data.feature_selection import f_regression, selectKbest
 		self.filename = "datasets/pima.data"
 		self.dataset = Dataset.from_data(self.filename, labeled=True)
-		self.selectKbest = selectKbest(f_regression, 5)
-		self.assertEqual(self.selectKbest.k, 5, "selectKbest doesn't have correct k")
+		self.selectKbest = selectKbest(5, f_regression)
+		self.assertEqual(5, self.selectKbest.k, f"selectKbest doesn't have correct k")
 
 	def test_fit(self):
 		self.selectKbest.fit(self.dataset)
-		self.assertEqual(len(self.selectKbest.f), 8, "F size doesn't correspond to dataset size")
-		self.assertEqual(len(self.selectKbest.pvalue), 8, "p size doesn't correspond to dataset size")
+		self.assertEqual(8, len(self.selectKbest.f), "F size doesn't correspond to dataset size")
+		self.assertEqual(8, len(self.selectKbest.pvalue), "p size doesn't correspond to dataset size")
 
 	def test_transform(self):
 		self.selectKbest.fit(self.dataset)
@@ -92,13 +92,13 @@ class test_selectKbest_f_classification(unittest.TestCase):
 		from si.data.feature_selection import f_classification, selectKbest
 		self.filename = "datasets/pima.data"
 		self.dataset = Dataset.from_data(self.filename, labeled=True)
-		self.selectKbest = selectKbest(f_classification, 5)
-		self.assertEqual(self.selectKbest.k, 5, "selectKbest doesn't have correct k")
+		self.selectKbest = selectKbest(5, f_classification)
+		self.assertEqual(5, self.selectKbest.k, "selectKbest doesn't have correct k")
 
 	def test_fit(self):
 		self.selectKbest.fit(self.dataset)
-		self.assertEqual(len(self.selectKbest.f), 8, "F size doesn't correspond to dataset size")
-		self.assertEqual(len(self.selectKbest.pvalue), 8, "p size doesn't correspond to dataset size")
+		self.assertEqual(8, len(self.selectKbest.f), "F size doesn't correspond to dataset size")
+		self.assertEqual(8, len(self.selectKbest.pvalue), "p size doesn't correspond to dataset size")
 
 	def test_transform(self):
 		self.selectKbest.fit(self.dataset)
