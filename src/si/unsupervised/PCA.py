@@ -1,18 +1,20 @@
 import numpy as np
 from si.util.scale import StandardScaler as sc
 
+__all__ = ['PCA']
+
 class PCA:
 	def __init__(self, n_comp, PCA_type='svd'):
 		self.type = PCA_type
-		if self.n_comp > 0 and isinstance(n_comp, int): self.n_comp = n_comp
+		if n_comp > 0 and isinstance(n_comp, int): self.n_comp = n_comp
 		else: Warning('Number of components must an non negative integer.')
 
 	def fit(self):
 		pass
 
 	def transform(self, dataset):
-		scaled_feature = sc.fit_transform(dataset).X.T   # Normalização com a Classe Standard Scaler
-		if self.type == 'svd': self.u, self.s, self.vh = np.linalg.svd(dataset)
+		scaled_feature = sc().fit_transform(dataset).X.T  # Normalização com a Classe Standard Scaler
+		if self.type.lower() == 'svd': self.u, self.s, self.vh = np.linalg.svd(scaled_feature)
 		else:
 			self.cov_matrix = np.cov(scaled_feature)
 			self.s, self.u = np.linalg.eig(self.cov_matrix)
@@ -28,4 +30,6 @@ class PCA:
 		return np.array(percentage)
 
 	def fit_transform(self, dataset):
-		return self.transform(dataset), self.explained_variances()
+		trans = self.transform(dataset)
+		exp = self.explained_variances()
+		return trans, exp

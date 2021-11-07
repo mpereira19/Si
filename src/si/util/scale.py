@@ -42,12 +42,12 @@ class StandardScaler:
         -------
         A Dataset object with standardized data.
         """
-        z = (dataset.X - self.mean) / self.sqrt(self.var)
+        z = (dataset.X - self.mean) / np.sqrt(self.var)
         if inline:
             dataset.X = z
             return dataset
         else:
-            return Dataset(z, copy(dataset.Y), copy(dataset.xnames), copy(dataset.yname))
+            return Dataset(z, copy(dataset.Y), copy(dataset._xnames), copy(dataset._yname))
 
     def fit_transform(self, dataset, inline=False):
         """

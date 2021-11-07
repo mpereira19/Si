@@ -30,10 +30,13 @@ class VarianceThreshold:
 			from .dataset import Dataset
 			return Dataset(X_trans, copy(dataset.Y), xnames, copy(dataset._yname))
 
+	def fit_transform(self, dataset, inline=False):
+		self.fit(dataset)
+		return self.transform(dataset, inline)
 
 class selectKbest:
 
-	def __init__(self, scoring_function, k):
+	def __init__(self, k, scoring_function):
 		self.scor_func = scoring_function
 		self.k = k
 
@@ -42,7 +45,7 @@ class selectKbest:
 
 	def transform(self, dataset, inline=False):
 		x, x_names = copy(dataset.X), copy(dataset._xnames)
-		indexes = self.f.argsort()[len(self.f)-self.k:]
+		indexes = sorted(self.f.argsort()[len(self.f)-self.k:])
 		new_data = x[:, indexes]
 		xnames = [x_names[i] for i in indexes]
 		if inline:

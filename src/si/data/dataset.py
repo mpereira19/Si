@@ -3,7 +3,7 @@ import pandas as pd
 
 from si.util.util import label_gen
 
-__all__ = ['Dataset']
+__all__ = ['Dataset', 'summary']
 
 
 class Dataset:
@@ -92,9 +92,14 @@ class Dataset:
 
     def toDataframe(self):
         """ Converts the dataset into a pandas DataFrame"""
-        df = pd.DataFrame(data=self.X, columns=self._xnames)
-        df[self._yname] = self.Y
-        return df
+        if self.hasLabel():
+            if type(self.X) is tuple: self.X = self.X[0]
+            fullds = np.hstack((self.X, self.Y.reshape(len(self.Y), 1)))
+            columns = self._xnames[:] + [self._yname]
+        else:
+            fullds = self.X.copy()
+            columns = self._xnames[:]
+        return pd.DataFrame(fullds, columns=columns)
 
     def getXy(self):
         return self.X, self.Y
@@ -107,7 +112,7 @@ def summary(dataset, format='df'):
     :type format: str, optional
     """
     if dataset.hasLabel():
-        fullds = np.hstack((dataset.X, dataset.y.reshape(len(dataset.y), 1)))
+        fullds = np.hstack([dataset.X, np.reshape(dataset.Y, (-1, 1))])
         columns = dataset._xnames[:]+[dataset._yname]
     else:
         fullds = dataset.X
