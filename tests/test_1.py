@@ -28,3 +28,6 @@ class TestLabeledDataset(TestUnlabeledDataset):
         from si.data import Dataset
         self.filename = "datasets/lr-example1.data"
         self.dataset = Dataset.from_data(self.filename, labeled=True)
+
+if __name__ == '__main__':
+    unittest.main()

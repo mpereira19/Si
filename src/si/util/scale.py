@@ -1,6 +1,6 @@
 import numpy as np
 from copy import copy
-from ..data import Dataset
+from si.data import Dataset
 
 
 class StandardScaler:

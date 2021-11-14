@@ -42,7 +42,7 @@ def train_test_split(dataset, split=0.8):
     arr = np.arange(numtst)
     m = int(split*numtst)
     np.random.shuffle(arr)
-    from ..data import Dataset
+    from si.data import Dataset
     train = Dataset(dataset.X[arr[:m]], dataset.Y[arr[:m]], dataset._xnames, dataset._yname)
     test = Dataset(dataset.X[arr[m:]], dataset.Y[arr[m:]], dataset._xnames, dataset._yname)
     return train, test
