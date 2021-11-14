@@ -2,7 +2,7 @@ import numpy as np
 from scipy import stats
 from copy import copy
 import warnings
-from si.data import Dataset
+from .dataset import Dataset
 
 class VarianceThreshold:
 

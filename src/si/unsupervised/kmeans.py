@@ -1,7 +1,8 @@
 import numpy as np
-from si.util.util import l2_distance
+from si.util.util import euclidian_distance
 
 __all__ = ['Kmeans']
+
 
 class Kmeans:
 
@@ -9,7 +10,7 @@ class Kmeans:
 		self.k = k
 		self.max_iter = iterations
 		self.centroids = None
-		self.distance = l2_distance
+		self.distance = euclidian_distance
 
 	def fit(self, dataset):
 		x = dataset.X
