@@ -38,7 +38,7 @@ def manhattan_distance(x, y):
 
 
 def train_test_split(dataset, split=0.8):
-    numtst = dataset.shape[0]
+    numtst = dataset.X.shape[0]
     arr = np.arange(numtst)
     m = int(split*numtst)
     np.random.shuffle(arr)
