@@ -1,23 +1,27 @@
 import numpy as np
-from si.util import euclidian_distance, accuracy_score
+from si.util import euclidian_distance, accuracy_score, manhattan_distance
 
 __all__ = ['Knn']
 
 
 class Knn:
 
-	def __init__(self, number_neighbors, classification):
+	def __init__(self, number_neighbors :int, classification, func=euclidian_distance):
 		super(Knn, self).__init__()
 		self.k = number_neighbors
 		self.classification = classification
+		if func == euclidian_distance or func == manhattan_distance:
+			self.func = func
+		else: raise Exception('Score functions: euclidean_distance, manhattan_distance')
 
 	def fit(self, dataset):
 		self.dataset = dataset
 		self.is_fitted = True
+		return self.dataset
 
 	def get_neighbors(self, x):
 		# calcular a distância do x a todos os outros pontos do nosso dataset
-		dist = euclidian_distance(x, self.dataset.X)
+		dist = self.func(x, self.dataset.X)
 		# ordenar os indices por ordem crescente de distância
 		sorted_idxs = np.argsort(dist)
 		return sorted_idxs[:self.k]
@@ -27,7 +31,7 @@ class Knn:
 		# pegamos nos k mais próximos (mascara)
 		# y_values = dataset.y[mascara]
 		neighbors = self.get_neighbors(x)
-		values = self.dataset[neighbors].tolist()
+		values = self.dataset.Y[neighbors].tolist()
 		if self.classification:
 			prediction = max(set(values), key=values.count)
 		else:
