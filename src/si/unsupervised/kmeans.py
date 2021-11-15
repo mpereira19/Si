@@ -38,7 +38,7 @@ class Kmeans:
 			for i in range(self.k):
 				cent.append(np.mean(x[self.idxs == i], axis=0))
 			self.centroids = np.array(cent)
-			changed = np.all(old_idxs == self.idxs)
+			changed = np.any(old_idxs != self.idxs)
 			old_idxs = self.idxs
 			count += 1
 		return self.centroids, self.idxs
