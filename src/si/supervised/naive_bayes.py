@@ -1,4 +1,5 @@
 import numpy as np
+from ..util import accuracy_score
 
 __all__ = ['GaussianNB']
 
@@ -115,6 +116,8 @@ class GaussianNB:
 
 			result = max(probs_outcome, key=lambda x: probs_outcome[x])
 			results.append(result)
+			self.results = np.array(results)
+		return self.results
 
-		return np.array(results)
-
+	def cost(self, Y_test):
+		return accuracy_score(Y_test, self.results)
