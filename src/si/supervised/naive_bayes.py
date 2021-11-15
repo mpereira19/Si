@@ -6,6 +6,7 @@ __all__ = ['GaussianNB']
 
 class GaussianNB:
 
+	# https://medium.com/@rangavamsi5/na%C3%AFve-bayes-algorithm-implementation-from-scratch-in-python-7b2cc39268b9
 	def __init__(self):
 
 		"""
