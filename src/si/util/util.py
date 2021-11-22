@@ -6,7 +6,7 @@ import pandas as pd
 
 ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXZ'
 
-__all__ = ['label_gen', 'euclidian_distance', 'manhattan_distance', 'train_test_split']
+__all__ = ['label_gen', 'euclidian_distance', 'manhattan_distance', 'train_test_split', 'sigmoid']
 
 
 def label_gen(n):
@@ -46,3 +46,7 @@ def train_test_split(dataset, split=0.8):
     train = Dataset(dataset.X[arr[:m]], dataset.Y[arr[:m]], dataset._xnames, dataset._yname)
     test = Dataset(dataset.X[arr[m:]], dataset.Y[arr[m:]], dataset._xnames, dataset._yname)
     return train, test
+
+
+def sigmoid(z):
+    return 1 / (1 + np.exp(-z))
