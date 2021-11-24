@@ -1,6 +1,6 @@
 from .modelo import Modelo
 import numpy as np
-from ..util import mse, sigmoid
+from ..util import mse, sigmoid, add_intersect
 
 __all__ = ['LinearRegression', 'LinearRegressionReg', 'LogisticRegression', 'LogisticRegressionReg']
 
@@ -18,7 +18,7 @@ class LinearRegression:
 
 	def fit(self, dataset):
 		X, y = dataset.getXy()
-		X = np.hstack((np.ones((X.shape[0], 1)), X))
+		X = add_intersect(X)
 		########
 		# Só é necessário para fazer o score (cost) caso não queiram dar os dados
 		self.X = X
@@ -45,9 +45,12 @@ class LinearRegression:
 		_x = np.hstack(([1], x))
 		return np.dot(self.theta, _x)
 
-	def cost(self):
-		y_pred = np.dot(self.X, self.theta)
-		return mse(self.Y, y_pred)/2
+	def cost(self, X=None, y=None, theta=None):
+		X = add_intersect(X) if X is not None else self.X
+		y = y if y is not None else self.Y
+		theta = theta if theta is not None else self.theta
+		y_pred = np.dot(X, theta)
+		return mse(y, y_pred)/2
 
 
 class LinearRegressionReg:
@@ -81,7 +84,7 @@ class LinearRegressionReg:
 
 	def fit(self, dataset):
 		X, y = dataset.getXy()
-		X = np.hstack((np.ones((X.shape[0], 1)), X))
+		X = add_intersect(X)
 		########
 		# Só é necessário para fazer o score (cost) caso não queiram dar os dados
 		self.X = X
@@ -96,9 +99,12 @@ class LinearRegressionReg:
 		_x = np.hstack(([1], x))
 		return np.dot(self.theta, _x)
 
-	def cost(self):
-		y_pred = np.dot(self.X, self.theta)
-		return mse(self.Y, y_pred)/2
+	def cost(self, X=None, y=None, theta=None):
+		X = add_intersect(X) if X is not None else self.X
+		y = y if y is not None else self.Y
+		theta = theta if theta is not None else self.theta
+		y_pred = np.dot(X, theta)
+		return mse(y, y_pred)/2
 
 
 class LogisticRegression:
@@ -114,7 +120,7 @@ class LogisticRegression:
 
 	def fit(self, dataset):
 		X, y = dataset.getXy()
-		X = np.hstack((np.ones((X.shape[0], 1)), X))
+		X = add_intersect(X)
 		########
 		# Só é necessário para fazer o score (cost) caso não queiram dar os dados
 		self.X = X
@@ -143,10 +149,13 @@ class LogisticRegression:
 		else: res = 0
 		return res
 
-	def cost(self):
-		h = sigmoid(np.dot(self.X, self.theta))
-		cost = (-self.Y * np.log(h) - (1 - self.Y) * np.log(1-h))
-		res = np.sum(cost)/self.X.shape[0]
+	def cost(self, X=None, y=None, theta=None):
+		X = add_intersect(X) if X is not None else self.X
+		y = y if y is not None else self.Y
+		theta = theta if theta is not None else self.theta
+		h = sigmoid(np.dot(X, theta))
+		cost = (-y * np.log(h) - (1 - y) * np.log(1-h))
+		res = np.sum(cost)/X.shape[0]
 		return res
 
 
@@ -164,7 +173,7 @@ class LogisticRegressionReg:
 
 	def fit(self, dataset):
 		X, y = dataset.getXy()
-		X = np.hstack((np.ones((X.shape[0], 1)), X))
+		X = add_intersect(X)
 		########
 		# Só é necessário para fazer o score (cost) caso não queiram dar os dados
 		self.X = X
@@ -195,8 +204,11 @@ class LogisticRegressionReg:
 			res = 0
 		return res
 
-	def cost(self):
-		h = sigmoid(np.dot(self.X, self.theta))
-		cost = (-self.Y * np.log(h) - (1 - self.Y) * np.log(1 - h))
-		res = np.sum(cost) / self.X.shape[0]
+	def cost(self, X=None, y=None, theta=None):
+		X = add_intersect(X) if X is not None else self.X
+		y = y if y is not None else self.Y
+		theta = theta if theta is not None else self.theta
+		h = sigmoid(np.dot(X, theta))
+		cost = (-y * np.log(h) - (1 - y) * np.log(1 - h))
+		res = np.sum(cost) / X.shape[0]
 		return res
