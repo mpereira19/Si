@@ -73,7 +73,6 @@ class GridSearchCV:
 			for r in self.results:
 				v.append(r[0][i])
 			data[k] = v
-		print(data)
 		for i in range(len(self.results[0][1][0])):
 			train, test = list(), list()
 			for res in self.results:
