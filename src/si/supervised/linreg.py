@@ -160,7 +160,7 @@ class LogisticRegression:
 		return res
 
 
-class LogisticRegressionReg(LogisticRegression):
+class LogisticRegressionReg:
 
 	' Regressão Logística com regularização'
 
@@ -170,6 +170,18 @@ class LogisticRegressionReg(LogisticRegression):
 		self.epochs = epochs
 		self.lr = lr
 		self.lbd = lbd  # lbd = lambda
+
+	def fit(self, dataset):
+		X, y = dataset.getXy()
+		X = add_intersect(X)
+		########
+		# Só é necessário para fazer o score (cost) caso não queiram dar os dados
+		self.X = X
+		self.Y = y
+		##########
+		# closed form or GD
+		self.train(X, y)
+		self.is_fitted = True
 
 	def train(self, X, y):
 		m, n = X.shape
@@ -183,6 +195,14 @@ class LogisticRegressionReg(LogisticRegression):
 			grad[1:] = grad[1:] + reg
 			self.theta -= self.lr * grad
 			self.history[epoch] = [self.theta[:], self.cost()]
+
+	def predict(self, x):
+		assert self.is_fitted, 'Model must be fit before predicting'
+		hs = np.hstack(([1], x))
+		p = sigmoid(np.dot(self.theta, hs))
+		if p >= 0.5: res = 1
+		else: res = 0
+		return res
 
 	def cost(self, X=None, y=None, theta=None):
 		X = add_intersect(X) if X is not None else self.X
