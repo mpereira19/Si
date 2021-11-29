@@ -6,7 +6,7 @@ __all__ = ['Knn']
 
 class Knn:
 
-	def __init__(self, number_neighbors :int, classification, func=euclidian_distance):
+	def __init__(self, number_neighbors :int, classification=True, func=euclidian_distance):
 		super(Knn, self).__init__()
 		self.k = number_neighbors
 		self.classification = classification

@@ -1,7 +1,7 @@
-from .model import Model
+from .modelo import Modelo
 from ..util import accuracy_score
 import numpy as np
-
+__all__ = ['DecisionTree', 'Node']
 
 class Node:
     """Implementation of a simple binary tree for DT classifier."""
@@ -20,7 +20,7 @@ class Node:
         self.is_terminal = False
 
 
-class DecisionTree(Model):
+class DecisionTree(Modelo):
 
     def __init__(self, max_depth=3, min_samples_leaf=1, min_samples_split=2):
         super().__init__()
