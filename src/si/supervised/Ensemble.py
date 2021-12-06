@@ -1,7 +1,8 @@
 import numpy as np
 from .modelo import Modelo
+import pandas as pd
 
-__all__ = ['Ensemble', 'majority', 'average']
+__all__ = ['Ensemble', 'majority', 'average', 'ConfusionMatrix']
 
 
 def majority(values):
@@ -43,12 +44,16 @@ class Ensemble(Modelo):
 
 class ConfusionMatrix:
 
-	def calc(self, true_y, pred_y):
-		...
-		self.conf = ...
+	def __init__(self, true_y, pred_y):
+		self.true_y = np.array(true_y)
+		self.pred_y = np.array(pred_y)
+		self.conf = None
 
-	def toDataFrame(self):
-		pass
+	def calc(self):
+		self.conf = pd.crosstab(self.true_y, self.pred_y, rownames=['Actual'], colnames=['Predicted'], margins=True)
 
-	def __call__(self, true_y, pred_y):
-		self.calc(true_y, pred_y)
+	def toDataframe(self):
+		return self.conf
+
+	def __call__(self):
+		self.calc()
