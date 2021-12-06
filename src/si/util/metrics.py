@@ -1,6 +1,6 @@
 import numpy as np
 
-__all__ = ['accuracy_score', 'mse']
+__all__ = ['accuracy_score', 'mse', 'mse_prime', 'cross_entropy', 'cross_entropy_prime', 'r2_score']
 
 
 def accuracy_score(y_true, y_pred):
