@@ -42,7 +42,16 @@ class Dense(Layer):
 		return self.output
 
 	def backward(self, output_error, learning_rate):
-		raise NotImplementedError
+		# compute the weights error dE/dW = X.T * dE/dY
+		weights_error = np.dot(self.input.T, output_error)
+		# compute the bias error dE/dB = dE/dY
+		bias_error = np.sum(output_error, axis=0)
+		# error dE/dX to pass on to the previous layer
+		input_error = np.dot(output_error, self.weights.T)
+		# update parameters
+		self.weights -= learning_rate * weights_error
+		self.bias -= learning_rate * bias_error
+		return input_error
 
 
 class Activation(Layer):
@@ -56,21 +65,45 @@ class Activation(Layer):
 		return self.output
 
 	def backward(self, output_error, learning_rate):
-		raise NotImplementedError
+		# learning rate is not used because is no "learnable" parameters,
+		# Only passed the error do the previous layer
+		return np.multiply(self.function.prime(self.input), output_error)
 
 
 class NN(Modelo):
 	def __init__(self, epochs=1000, lr=0.001, verbose=True):
 		self.epochs = epochs
 		self.lr = lr
-		self.verbose = True
+		self.verbose = verbose
 
 		self.layers = []
 		self.loss = mse
 		self.loss_prime = mse_prime
 
 	def fit(self, dataset):
-		raise NotImplementedError
+		X, y = dataset.getXy()
+		self.dataset = dataset
+		self.history = dict()
+		for epoch in range(self.epochs):
+			output = X
+
+			# forward propagation
+			for layer in self.layers:
+				output = layer.forward(output)
+
+			# backward propagation
+			error = self. loss_prime(y, output)
+			for layer in reversed(self.layers):
+				error = layer.backward(error, self.lr)
+
+			# calculate average error
+			err = self.loss(y, output)
+			self.history[epoch] = err
+			if self.verbose:
+				print(f'epoch {epoch+1}/{self.epochs} error={err}')
+		if not self.verbose:
+			print(f'error={err}')
+		self.is_fitted = True
 
 	def add(self, layer):
 		self.layers.append(layer)
