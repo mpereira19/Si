@@ -7,7 +7,7 @@ __all__ = ['CrossValidationScore', 'GridSearchCV']
 
 class CrossValidationScore:
 
-	def __init__(self, model, dataset, score=None, **kwargs):
+	def __init__(self, model, dataset, flip=False, score=None, **kwargs):
 		self.model = model
 		self.dataset = dataset
 		self.cv = kwargs.get('cv', 3)
@@ -18,6 +18,7 @@ class CrossValidationScore:
 		self.score = score
 		self.true_Y = None
 		self.pred_Y = None
+		self.flip = flip
 
 	def run(self):
 		train_scores = []
@@ -32,19 +33,23 @@ class CrossValidationScore:
 			if not self.score:
 				train_scores.append(self.model.cost())
 				test_scores.append(self.model.cost(test.X, test.Y))
-				pred_Y.extend(list(self.model.predict(test.X)))
+				if self.flip is True:
+					pred_Y.extend(list(self.model.predict(test.X)))
 			else:
-				y_train = np.ma.apply_along_axis(self.model.predict, axis=0, arr=train.X.T)
+				y_train = np.ma.apply_along_axis(self.model.predict, axis=1, arr=train.X)
 				train_scores.append(self.score(train.Y, y_train))
-				y_test = np.ma.apply_along_axis(self.model.predict, axis=0, arr=test.X.T)
+				y_test = np.ma.apply_along_axis(self.model.predict, axis=1, arr=test.X)
 				test_scores.append(self.score(test.Y, y_test))
-				pred_Y.extend(list(y_test))
-			true_Y.extend(list(test.Y))
+				if self.flip is True:
+					pred_Y.extend(list(y_test))
+			if self.flip is True:
+				true_Y.extend(list(test.Y))
 		self.train_scores = train_scores
 		self.test_scores = test_scores
 		self.ds = ds
-		self.true_Y = np.array(true_Y)
-		self.pred_Y = np.array(pred_Y)
+		if self.flip is True:
+			self.true_Y = np.array(true_Y)
+			self.pred_Y = np.array(pred_Y)
 		return train_scores, test_scores
 
 	def toDataframe(self):
@@ -54,9 +59,10 @@ class CrossValidationScore:
 
 
 class GridSearchCV:
-	def __init__(self, model, dataset, parameters, **kwargs):
+	def __init__(self, model, dataset, parameters, score=None, **kwargs):
 		self.model = model
 		self.dataset = dataset
+		self.score = score
 		hasparam = [hasattr(self.model, param) for param in parameters]
 		# ele está a verificar se esse atributo existe na função
 		if np.all(hasparam):
@@ -74,9 +80,9 @@ class GridSearchCV:
 		attrs = list(self.parameters.keys())
 		values = list(self.parameters.values())
 		for conf in itertools.product(*values):
-			for i in range(len(attrs)):
-				setattr(self.model, attrs[i], conf[i])
-			scores = CrossValidationScore(self.model, self.dataset, **self.kwargs).run()
+			for attr, value in zip(attrs, conf):
+				setattr(self.model, attr, value)
+			scores = CrossValidationScore(self.model, self.dataset, self.score, **self.kwargs).run()
 			self.results.append((conf, scores))
 		return self.results
 
@@ -94,8 +100,6 @@ class GridSearchCV:
 			for res in self.results:
 				train.append(res[1][0][i])
 				test.append(res[1][1][i])
-			data['Train'+str(i+1)] = train
-			data['Test'+str(i+1)] = test
+			data['CV_'+str(i+1)+' train'] = train
+			data['CV_'+str(i+1)+' test'] = test
 		return pd.DataFrame(data)
-
-		# falta fazer o resto da função

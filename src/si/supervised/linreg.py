@@ -1,6 +1,6 @@
 from .modelo import Modelo
 import numpy as np
-from ..util import mse, sigmoid, add_intersect
+from ..util import mse, sig, add_intersect
 from ..supervised import modelo
 
 __all__ = ['LinearRegression', 'LinearRegressionReg', 'LogisticRegression', 'LogisticRegressionReg']
@@ -108,7 +108,7 @@ class LinearRegressionReg:
 		return mse(y, y_pred)/2
 
 
-class LogisticRegression:
+class LogisticRegression(Modelo):
 
 	' Regressão Logística sem regularização'
 
@@ -136,7 +136,7 @@ class LogisticRegression:
 		self.theta = np.zeros(n)
 		for epoch in range(self.epochs):
 			z = np.dot(X, self.theta)
-			h = sigmoid(z)
+			h = sig(z)
 			grad = np.dot(X.T, (h - y)) / y.size
 			self.theta -= self.lr * grad
 			self.history[epoch] = [self.theta.copy(), self.cost()]
@@ -144,7 +144,7 @@ class LogisticRegression:
 	def predict(self, x):
 		assert self.is_fitted, 'Model must be fit before predicting'
 		hs = np.hstack(([1], x))
-		p = sigmoid(np.dot(self.theta, hs))
+		p = sig(np.dot(self.theta, hs))
 		if p >= 0.5: res = 1
 		else: res = 0
 		return res
@@ -154,7 +154,7 @@ class LogisticRegression:
 		y = y if y is not None else self.Y
 		theta = theta if theta is not None else self.theta
 		m, n = X.shape
-		h = sigmoid(np.dot(X, theta))
+		h = sig(np.dot(X, theta))
 		cost = (-y * np.log(h) - (1 - y) * np.log(1-h))
 		res = np.sum(cost) / m
 		return res
@@ -174,12 +174,8 @@ class LogisticRegressionReg:
 	def fit(self, dataset):
 		X, y = dataset.getXy()
 		X = add_intersect(X)
-		########
-		# Só é necessário para fazer o score (cost) caso não queiram dar os dados
 		self.X = X
 		self.Y = y
-		##########
-		# closed form or GD
 		self.train(X, y)
 		self.is_fitted = True
 
@@ -189,7 +185,7 @@ class LogisticRegressionReg:
 		self.theta = np.zeros(n)
 		for epoch in range(self.epochs):
 			z = np.dot(X, self.theta)
-			h = sigmoid(z)
+			h = sig(z)
 			grad = np.dot(X.T, (h - y)) / y.size
 			reg = (self.lbd / m) * self.theta[1:]  ###### parentesis
 			grad[1:] = grad[1:] + reg
@@ -199,7 +195,7 @@ class LogisticRegressionReg:
 	def predict(self, x):
 		assert self.is_fitted, 'Model must be fit before predicting'
 		hs = np.hstack(([1], x))
-		p = sigmoid(np.dot(self.theta, hs))
+		p = sig(np.dot(self.theta, hs))
 		if p >= 0.5: res = 1
 		else: res = 0
 		return res
@@ -209,7 +205,7 @@ class LogisticRegressionReg:
 		y = y if y is not None else self.Y
 		theta = theta if theta is not None else self.theta
 		m = X.shape[0]
-		h = sigmoid(np.dot(X, theta))
+		h = sig(np.dot(X, theta))
 		cost = (-y * np.log(h) - (1 - y) * np.log(1 - h))
 		reg = np.dot(theta[1:], theta[1:]) * self.lbd / (2 * m)
 		res = np.sum(cost) / m

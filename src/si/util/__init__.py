@@ -3,3 +3,4 @@ from .metrics import *
 from .scale import StandardScaler
 from .cv import *
 from .activation import *
+from .im2col import *

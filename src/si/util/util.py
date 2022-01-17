@@ -6,7 +6,7 @@ import pandas as pd
 
 ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXZ'
 
-__all__ = ['label_gen', 'euclidian_distance', 'manhattan_distance', 'train_test_split', 'sigmoid', 'add_intersect']
+__all__ = ['label_gen', 'euclidian_distance', 'manhattan_distance', 'train_test_split', 'sig', 'add_intersect', 'l1_distance', 'l2_distance', 'minibatch', 'to_categorical']
 
 
 def label_gen(n):
@@ -67,7 +67,7 @@ def train_test_split(dataset, split=0.8):
     return train, test
 
 
-def sigmoid(z):
+def sig(z):
     return 1 / (1 + np.exp(-z))
 
 

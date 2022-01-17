@@ -1,2 +1,2 @@
 from .PCA import PCA
-from .Kmeans import Kmeans
+from .kmeans import Kmeans

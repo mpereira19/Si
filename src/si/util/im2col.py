@@ -1,5 +1,7 @@
 import numpy as np
 
+__all__ = ['calc_pad_dims_2D', 'pad2D', '_im2col_indices', 'im2col', 'col2im']
+
 
 def calc_pad_dims_2D(X_shape, out_dim, kernel_shape, stride):
     if not isinstance(X_shape, tuple):
